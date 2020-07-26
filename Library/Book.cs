@@ -6,6 +6,7 @@ namespace Library
 {
    public class Book
     {
+
         public string Title { get; set; }
         public string Author { get; set; }
         public int Pages { get; set; }
@@ -18,12 +19,7 @@ namespace Library
             Pages = pages;
             Genre = genre;
             
-            AddBookToLib(this);
         }
 
-        internal void AddBookToLib(Book b)
-        {
-            Library.Books.Add(b);
-        }
     }
 }

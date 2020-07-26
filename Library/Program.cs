@@ -16,7 +16,7 @@ namespace Library
 
         static void Init()
         {
-            new Library(Booklist.bookList);
+            new LibraryService();
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("_________________________________________________________");
@@ -32,17 +32,17 @@ namespace Library
 
         static void PrintAllBooks()
         {
-            var list = Library.GetAllBooks().GroupBy(b => b.Genre);
+            var list = LibraryService.GetAllBooks().GroupBy(b => b.Genre);
 
             foreach (var group in list)
             {
-                Console.WriteLine(group.Key + ":");                
+                Console.WriteLine(group.Key + ":");
                 foreach (var item in group)
-                {                   
+                {
                     Console.WriteLine($" '{item.Title}' by '{item.Author}' with {item.Pages} pages");
                 }
                 Console.WriteLine("");
-            }         
+            }
         }
 
         static void RemoveByTitle()
@@ -55,7 +55,7 @@ namespace Library
 
             Console.WriteLine("Enter title:");
             string title = Console.ReadLine();
-            Library.RemoveByTitle(title);
+            LibraryService.RemoveByTitle(title);
             Console.WriteLine($"book with {title} removed");
         }
 
@@ -64,7 +64,7 @@ namespace Library
             Console.WriteLine("Enter author:");
             string title = Console.ReadLine();
 
-            var res = Library.SearchByAuthor(title);
+            var res = LibraryService.SearchByAuthor(title);
 
             if (res.Count < 1)
             {
@@ -83,7 +83,7 @@ namespace Library
             Console.WriteLine("Enter title:");
             string title = Console.ReadLine();
 
-            var res = Library.SearchByTitle(title);
+            var res = LibraryService.SearchByTitle(title);
 
             if (res.Count < 1)
             {
@@ -108,10 +108,11 @@ namespace Library
             try
             {
                 Console.WriteLine("enter book");
-                var book = Console.ReadLine().Split(",").ToArray();
-                if (book.Length == 3 || book.Length == 4)
+                var bookDataArr = Console.ReadLine().Split(",").ToArray();
+                if (bookDataArr.Length == 3 || bookDataArr.Length == 4)
                 {
-                    Book b = new Book(book[0], book[1], Convert.ToInt32(book[2]));
+                    Book bookToAdd = new Book(bookDataArr[0], bookDataArr[1], Convert.ToInt32(bookDataArr[2]));
+                    LibraryService.AddBook(bookToAdd);
                 }
                 else
                 {
