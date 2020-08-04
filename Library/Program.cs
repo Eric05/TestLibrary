@@ -47,10 +47,13 @@ namespace Library
 
         static void RemoveByTitle()
         {
-            if (!CheckAdmin())
+            if (!Admin.CheckAdmin())
             {
-                Console.WriteLine("you are not allowed to delete");
-                return;
+                if (!PromptAdmin())
+                {
+                    Console.WriteLine("you are not allowed to add");
+                    return;
+                }
             }
 
             Console.WriteLine("Enter title:");
@@ -99,19 +102,24 @@ namespace Library
 
         static void AddBook()
         {
-            if (!CheckAdmin())
+            if (!Admin.CheckAdmin())
             {
-                Console.WriteLine("you are not allowed to add");
-                return;
+                if (!PromptAdmin())
+                {
+                    Console.WriteLine("you are not allowed to add");
+                    return;
+                }
             }
 
             try
             {
                 Console.WriteLine("enter book");
+
                 var bookDataArr = Console.ReadLine().Split(",").ToArray();
+
                 if (bookDataArr.Length == 3 || bookDataArr.Length == 4)
                 {
-                    Book bookToAdd = new Book(bookDataArr[0], bookDataArr[1], Convert.ToInt32(bookDataArr[2]));
+                    Book bookToAdd = new Book(bookDataArr[0], bookDataArr[1], Convert.ToInt32(bookDataArr[2]), bookDataArr[3]);
                     LibraryService.AddBook(bookToAdd);
                 }
                 else
@@ -138,7 +146,6 @@ namespace Library
             }
             catch (Exception e)
             {
-
                 Console.WriteLine(e);
             }
             Console.ForegroundColor = ConsoleColor.White;
@@ -164,14 +171,10 @@ namespace Library
                     isRunning = false;
                     break;
             }
-
         }
-        static bool CheckAdmin()
+
+        static bool PromptAdmin()
         {
-            if (Admin.IsAdmin == true)
-            {
-                return true;
-            }
             Console.WriteLine("Enter your Username:");
             string name = Console.ReadLine();
 
@@ -180,18 +183,11 @@ namespace Library
             string pass = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (name == Admin.Name && Hash(pass) == Admin.Password)
+            if (Admin.CheckCredentials(name, pass))
             {
-                Admin.IsAdmin = true;
                 return true;
             }
             return false;
-        }
-        static string Hash(string password)
-        {
-            var bytes = new UTF8Encoding().GetBytes(password);
-            var hashBytes = System.Security.Cryptography.MD5.Create().ComputeHash(bytes);
-            return Convert.ToBase64String(hashBytes);
         }
     }
 }

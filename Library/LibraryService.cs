@@ -8,7 +8,7 @@ namespace Library
     public class LibraryService
     {
 
-        private static ILibraryDAO libraryDAO = new InMemoryLibraryDAO();
+        private static ILibraryDAO libraryDAO = GetDataConnection(GlobalConfig.dataConnection);
 
         public static List<Book> GetAllBooks()
         {
@@ -18,7 +18,6 @@ namespace Library
         public static void RemoveByTitle(string title)
         {
             libraryDAO.RemoveByTitle(title);
-
         }
 
         public static List<Book> SearchByAuthor(string author)
@@ -34,6 +33,25 @@ namespace Library
         internal static void AddBook(Book bookToAdd)
         {
             libraryDAO.Add(bookToAdd);
+        }
+
+        internal static ILibraryDAO GetDataConnection(string data)
+        {
+            ILibraryDAO libraryDAO;
+
+            switch (data)
+            {
+                case "nosql":
+                    libraryDAO = new NoSqlLibrary();
+                    break;
+                case "csv":
+                    libraryDAO = new CSVLibrary();
+                    break;
+                default:
+                    libraryDAO = new InMemoryLibraryDAO();
+                    break;
+            }
+            return libraryDAO;
         }
     }
 }
